@@ -1,10 +1,12 @@
 import 'package:event_management/login.dart';
 import 'package:event_management/profile_page.dart';
+import 'package:event_management/upcoming.dart';
 import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'add_event_page.dart';
 import 'main_page.dart';
 import 'profile_test.dart';
+import 'upcoming.dart';
 void main() {
   runApp(MyApp());
 }
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/addForm': (context) => EventFormPage(),
         '/profile': (context) => ProfilePage(),
+        '/upcoming': (context) => UpcomingEventsPage()
       },
     );
 

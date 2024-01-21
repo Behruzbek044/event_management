@@ -54,6 +54,9 @@ class HomePage extends StatelessWidget {
               Navigator.pushNamed(context, '/profile');
             },
           ),
+          IconButton(
+              onPressed: (){Navigator.pushNamed(context, '/upcoming');},
+              icon: Icon(Icons.calendar_month_outlined))
         ],
       ),
       // appBar: AppBar(

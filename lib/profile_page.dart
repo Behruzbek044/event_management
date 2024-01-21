@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'edit_profile.dart';
 
 class ProfilePage1 extends StatelessWidget {
   final String firstName = 'John';
@@ -13,6 +14,23 @@ class ProfilePage1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('User Profile', style: TextStyle( fontSize: 24.0, fontWeight: FontWeight.bold,)),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
+              },
+            ),
+          ],
+        ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(

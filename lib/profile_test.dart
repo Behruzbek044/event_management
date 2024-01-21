@@ -1,29 +1,19 @@
+import 'package:event_management/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'dart:convert';
+import 'edit_profile.dart';
 
 void fetchData() async {
-
   var url = Uri.http('localhost:8080', 'api/users/get');
-
-
   final response = await http.get(url);
-
   if (response.statusCode == 200) {
-
 // If the server returns a 200 OK response, parse the JSON.
-
      print(jsonDecode(response.body));
-
   } else {
-
 // If the server did not return a 200 OK response, throw an //exception.
-
     throw Exception('Failed to load data');
-
   }
-
 }
 
 class ProfilePage extends StatelessWidget {
@@ -39,36 +29,28 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('User Profile', style: TextStyle( fontSize: 24.0, fontWeight: FontWeight.bold,)),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
+              },
+            ),
+          ],
+        ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(height: 24.0),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        fetchData();
-                        //Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back, color: Colors.redAccent),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                'User Profile',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
               SizedBox(height: 24.0),
               Expanded(
                 child: Center(
