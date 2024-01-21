@@ -4,17 +4,17 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'edit_profile.dart';
 
-void fetchData() async {
-  var url = Uri.http('localhost:8080', 'api/users/get');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-// If the server returns a 200 OK response, parse the JSON.
-     print(jsonDecode(response.body));
-  } else {
-// If the server did not return a 200 OK response, throw an //exception.
-    throw Exception('Failed to load data');
-  }
-}
+// void fetchData() async {
+//   var url = Uri.http('localhost:8080', 'api/users/get');
+//   final response = await http.get(url);
+//   if (response.statusCode == 200) {
+// // If the server returns a 200 OK response, parse the JSON.
+//      print(jsonDecode(response.body));
+//   } else {
+// // If the server did not return a 200 OK response, throw an //exception.
+//     throw Exception('Failed to load data');
+//   }
+// }
 
 class ProfilePage extends StatelessWidget {
   final String firstName = 'John';
@@ -25,6 +25,23 @@ class ProfilePage extends StatelessWidget {
   final String studentID = '2110001';
   final String joinDate = 'January 1, 2023';
 
+
+  void fetchData() async {
+    var url = Uri.parse('http://localhost:8080/api/users/get'); // Replace with your server's endpoint
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,7 +51,8 @@ class ProfilePage extends StatelessWidget {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context);
+              fetchData();
+              //Navigator.pop(context);
             },
           ),
           actions: [
