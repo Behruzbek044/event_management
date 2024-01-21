@@ -1,69 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'modules.dart';
+import 'add_event_page.dart';
 
-
-class CalendarPage extends StatefulWidget {
-  @override
-  _CalendarPageState createState() => _CalendarPageState();
+void main() {
+  runApp(MyApp());
 }
 
-class _CalendarPageState extends State<CalendarPage> {
-  CalendarController _controller;
-  Map<DateTime, List<dynamic>> _events;
-
+class MyApp extends StatelessWidget {
   @override
-  void initState() {
-    super.initState();
-    _controller = CalendarController();
-    _events = {
-      DateTime(2023, 12, 8): ['Constitution Day'],
-      DateTime(2023, 12, 22): ['Event 1', 'Event 2'],
-      DateTime(2024, 1, 1): ['New Year'],
-    };
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Event Management and Registration',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomePage(),
+    );
   }
+}
+
+class HomePage extends StatelessWidget {
+  final List<Event> events = [
+    Event(
+      name: 'Event 1',
+      description: 'Description 1',
+      place: 'Place 1',
+      startTime: DateTime.now(),
+      endTime: DateTime.now().add(Duration(hours: 1)),
+      cost: 10.0,
+      type: 'Type 1',
+    ),
+    Event(
+      name: 'Event 2',
+      description: 'Description 2',
+      place: 'Place 2',
+      startTime: DateTime.now().add(Duration(days: 1)),
+      endTime: DateTime.now().add(Duration(days: 1, hours: 1)),
+      cost: 20.0,
+      type: 'Type 2',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'),
+        title: Text('Event Management and Registration'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              // Handle profile button press
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
       ),
-      body: TableCalendar(
-        calendarController: _controller,
-        events: _events,
-        markersBuilder: (context, date, events, holidays) {
-          final children = <Widget>[];
-          if (events.isNotEmpty) {
-            children.add(
-              Positioned(
-                right: 1,
-                bottom: 1,
-                child: _buildEventsMarker(date, events),
+      // appBar: AppBar(
+      //   title: Text('Event Management and Registration'),
+      //   actions: [
+      //     IconButton(
+      //       alignment: Alignment.topLeft,
+      //       icon: Icon(Icons.person),
+      //       onPressed: () {
+      //         Navigator.pushNamed(context, '/profile');},
+      //     ),
+      //     IconButton(
+      //       icon: Icon(Icons.person),
+      //       onPressed: () {
+      //         Navigator.pushNamed(context, '/profile');},
+      //     ),
+      //   ],
+      // ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Welcome to the Event Management and Registration Page!',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24.0,
               ),
-            );
-          }
-          return children;
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                return EventWidget(
+                  name: 'Event 1',
+                  description: 'Description 1',
+                  place: 'Place 1',
+                  startTime: DateTime.now(),
+                  endTime: DateTime.now().add(Duration(hours: 1)),
+                  cost: 10.0,
+                  type: 'Type 1',
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushNamed(context, '/addForm');
         },
       ),
     );
   }
+}
 
-  Widget _buildEventsMarker(DateTime date, List events) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.blue,
+class Event {
+  final String name;
+  final String description;
+  final String place;
+  final DateTime startTime;
+  final DateTime endTime;
+  final double cost;
+  final String type;
+
+  const Event({
+    required this.name,
+    required this.description,
+    required this.place,
+    required this.startTime,
+    required this.endTime,
+    required this.cost,
+    required this.type,
+  });
+}
+
+class AddEventPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Event'),
       ),
-      width: 20.0,
-      height: 20.0,
-      child: Center(
-        child: Text(
-          '${events.length}',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12.0,
-          ),
-        ),
+      body: Center(
+        child: Text('Add Event Page'),
       ),
     );
   }
