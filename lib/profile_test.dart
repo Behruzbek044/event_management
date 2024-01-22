@@ -4,18 +4,27 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'edit_profile.dart';
 
-// void fetchData() async {
-//   var url = Uri.http('localhost:8080', 'api/users/get');
-//   final response = await http.get(url);
-//   if (response.statusCode == 200) {
-// // If the server returns a 200 OK response, parse the JSON.
-//      print(jsonDecode(response.body));
-//   } else {
-// // If the server did not return a 200 OK response, throw an //exception.
-//     throw Exception('Failed to load data');
-//   }
-// }
-
+Future<void> fetchData() async {
+  var url = Uri.parse('http://localhost:8080/api/users/get');
+  try {
+    var response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      // Handle successful response
+      print('Response data: ${response.body}');
+    } else {
+      // Handle error response
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  } catch (e) {
+    // Handle any exceptions
+    print('Error: $e');
+  }
+}
 class ProfilePage extends StatelessWidget {
   final String firstName = 'John';
   final String lastName = 'Doe';
@@ -26,20 +35,22 @@ class ProfilePage extends StatelessWidget {
   final String joinDate = 'January 1, 2023';
 
 
-  void fetchData() async {
-    var url = Uri.parse('http://localhost:8080/api/users/get'); // Replace with your server's endpoint
-    try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        print(data);
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // void fetchData() async {
+  //   var url = Uri.parse('https://40ab-95-214-211-133.ngrok-free.app/api/users/get'); // Replace with your server's endpoint
+  //   try {
+  //     var response = await http.get(url);
+  //     if (response.statusCode == 200) {
+  //       var data = jsonDecode(response.body);
+  //       print(data);
+  //     } else {
+  //       print('Request failed with status: ${response.statusCode}.');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //     var response = await http.get(url);
+  //     print(response.body);
+  //   }
+  // }
 
 
   @override

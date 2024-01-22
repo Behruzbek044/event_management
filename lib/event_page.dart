@@ -1,23 +1,49 @@
 import 'package:flutter/material.dart';
+import 'modules.dart';  // Assuming this contains the Event class
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class EventPage extends StatelessWidget {
-  final String eventName;
-  final String description;
-  final String location;
-  final DateTime? startTime;
-  final DateTime? endTime;
-  final String eventType;
-  final double cost;
+class EventPage extends StatefulWidget {
+  final String eventId;
 
-  EventPage({
-    required this.eventName,
-    required this.description,
-    required this.location,
-    required this.startTime,
-    required this.endTime,
-    required this.eventType,
-    required this.cost,
-  });
+  EventPage({Key? key, required this.eventId}) : super(key: key);
+
+  @override
+  _EventPageState createState() => _EventPageState();
+}
+
+class _EventPageState extends State<EventPage> {
+  Event? event;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    var url = Uri.parse('http://localhost:8080/api/events/get/${widget.eventId}');
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        setState(() {
+          event = Event.fromJson(jsonDecode(response.body));
+          isLoading = false;
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +51,47 @@ class EventPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Event Details'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              eventName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.0,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            _buildDetailRow('Description', description),
-            _buildDetailRow('Location', location),
-            _buildDetailRow('Start Time', _formatDateTime(startTime)),
-            _buildDetailRow('End Time', _formatDateTime(endTime)),
-            _buildDetailRow('Type', eventType),
-            _buildDetailRow('Cost', '\$$cost'),
-            SizedBox(height: 24.0),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  _showConfirmationDialog(context);
-                },
-                child: Text('Register'),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : event == null
+          ? Center(child: Text('No event data available.'))
+          : buildEventDetails(),
     );
   }
 
+  Widget buildEventDetails() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            event!.name,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
+            ),
+          ),
+          SizedBox(height: 16.0),
+          _buildDetailRow('Description', event!.description),
+          _buildDetailRow('Location', event!.place ?? 'Not specified'),
+          _buildDetailRow('Start Time', _formatDateTime(event!.startTime)),
+          _buildDetailRow('End Time', _formatDateTime(event!.endTime)),
+          _buildDetailRow('Type', event!.type ?? 'Not specified'),
+          _buildDetailRow('Cost', '\$${event!.cost}'),
+          SizedBox(height: 24.0),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                _showConfirmationDialog(context);
+              },
+              child: Text('Register'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   Widget _buildDetailRow(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,14 +110,12 @@ class EventPage extends StatelessWidget {
       ],
     );
   }
-
   String _formatDateTime(DateTime? dateTime) {
     if (dateTime == null) {
       return '';
     }
     return '${_getMonthAbbreviation(dateTime.month)} ${dateTime.day}, ${dateTime.hour}:${dateTime.minute}';
   }
-
   String _getMonthAbbreviation(int month) {
     switch (month) {
       case 1:
@@ -115,7 +146,6 @@ class EventPage extends StatelessWidget {
         return '';
     }
   }
-
   void _showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -123,7 +153,7 @@ class EventPage extends StatelessWidget {
         return AlertDialog(
           title: Text('Confirmation'),
           content: Text(
-              'Are you sure to pay \$${cost.toString()} in order to register for this event?'),
+              'Are you sure to pay \$${event!.cost.toString()} in order to register for this event?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -162,4 +192,12 @@ class EventPage extends StatelessWidget {
       },
     );
   }
+
+
+
+
+// ... Rest of your widget code including _buildDetailRow, _formatDateTime, and dialogs
 }
+
+
+

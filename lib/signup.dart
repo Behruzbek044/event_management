@@ -102,14 +102,6 @@ class SignUpPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.0),
                   TextFormField(
-                    controller: _IDController,
-                    decoration: InputDecoration(
-                      labelText: 'Student ID',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 12.0),
-                  TextFormField(
                     controller: _phoneController,
                     decoration: InputDecoration(
                       labelText: 'Phone Number*',
