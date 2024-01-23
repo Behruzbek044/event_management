@@ -11,12 +11,32 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _filterApplied = false;
+  double balance = 0;
   List<Event> events = [];
+  List<User> Users = [];
   void initState() {
     super.initState();
     fetchData();
+    getBalance();
   }
 
+  void getBalance() async {
+    var url = Uri.parse('http://localhost:8080/api/users/get');
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          Users = data.map((json) => User.fromJson(json)).toList();
+          balance = Users[0].balance;
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void fetchData() async {
     var url = Uri.parse('http://localhost:8080/api/events/get');
@@ -82,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Text(
-                    'Balance: \$${User.balance.toStringAsFixed(2)}', // Format the balance as needed
+                    'Balance: \$$balance.toStringAsFixed(2)}', // Format the balance as needed
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

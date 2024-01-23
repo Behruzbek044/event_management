@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'modules.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -16,10 +18,28 @@ class SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _IDController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _passwordController2 = TextEditingController();
+  User? user;
+
+  void fetchUserData() async {
+    // Your API endpoint
+    var url = Uri.parse('http://localhost:8080/api/users/signIn'); //${user!.id}
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        int id = int.parse(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setInt('id', id);
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('Caught error: $e');
+    }
+  }
 
   void submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Validation successful, proceed with sending data
       Map<String, dynamic> userData = {
         'first_name': _firstnameController.text,
         'second_name': _secondnameController.text,
@@ -33,7 +53,7 @@ class SignUpPageState extends State<SignUpPage> {
       String jsonData = jsonEncode(userData);
 
       // Replace the URL with your server endpoint
-      var url = Uri.parse('http://localhost:8080/api/users/create');
+      var url = Uri.parse('http://localhost:8080/api/users/signUp');
 
       try {
         var response = await http.post(
@@ -173,9 +193,20 @@ class SignUpPageState extends State<SignUpPage> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 64.0),
+                    SizedBox(height: 12.0),
+                    PasswordField(
+                      controller: _passwordController2,
+                      validator: (String? value) {
+                        if (value != _passwordController.text) {
+                          return 'Password does not match';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 24.0),
                     SizedBox(
-                      height: 50.0,
+                      height: 40.0,
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: submitForm,
