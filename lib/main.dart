@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'add_event_page.dart';
 import 'main_page.dart';
-import 'profile_test.dart';
 import 'upcoming.dart';
 void main() {
   runApp(MyApp());
