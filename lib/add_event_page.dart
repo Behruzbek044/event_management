@@ -72,7 +72,7 @@ class _EventFormPageState extends State<EventFormPage> {
               decoration: InputDecoration(labelText: 'Place'),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter event name';
+                  return 'Please enter event place';
                 }
                 return null;
               },
@@ -123,13 +123,13 @@ class _EventFormPageState extends State<EventFormPage> {
       // ),
               ),
               TextFormField(
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(labelText: 'Cost'),
-              onChanged: (value) {
-              if (value.isNotEmpty) {
-              _cost = double.parse(value);
-              }
-              },
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(labelText: 'Cost'),
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    _cost = double.parse(value);
+                  }
+                },
               ),
               DropdownButtonFormField<String>(
                 value: _selectedType,
