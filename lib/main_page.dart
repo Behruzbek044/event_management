@@ -7,9 +7,7 @@ import 'dart:convert';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
-
 }
-
 
 class _HomePageState extends State<HomePage> {
   bool _filterApplied = false;
@@ -37,37 +35,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
-  // List<Event> events = [
-  //   Event(
-  //     name: 'Event 1',
-  //     description: 'Description 1',
-  //     place: 'Place 1',
-  //     startTime: DateTime.now(),
-  //     endTime: DateTime.now().add(Duration(hours: 1)),
-  //     cost: 10.0,
-  //     type: 'Type 1',
-  //   ),
-  //   Event(
-  //     name: 'Event 2',
-  //     description: 'Description 2',
-  //     place: 'Place 2',
-  //     startTime: DateTime.now().add(Duration(days: 1)),
-  //     endTime: DateTime.now().add(Duration(days: 1, hours: 1)),
-  //     cost: 20.0,
-  //     type: 'Type 2',
-  //   ),
-  //   Event(
-  //     name: 'Event 3',
-  //     description: 'Description 2',
-  //     place: 'Place 2',
-  //     startTime: DateTime.now().add(Duration(days: 1)),
-  //     endTime: DateTime.now().add(Duration(days: 1, hours: 1)),
-  //     cost: 0,
-  //     type: 'Type 2',
-  //   ),
-  // ];
-
   List<Event> getFilteredEvents(List<Event> events) {
     if (_filterApplied) {
       return events.where((event) => (event.cost == 0 || event.cost.isNaN)).toList();
@@ -89,18 +56,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, '/profile');
             },
           ),
-          IconButton(
-              onPressed: (){Navigator.pushNamed(context, '/upcoming');},
-              icon: Icon(Icons.calendar_month_outlined)
-          ),
-          IconButton(
-            icon: Icon(_filterApplied ? Icons.filter_alt : Icons.filter_alt_off),
-            onPressed: () {
-              setState(() {
-                _filterApplied = !_filterApplied;
-              });
-            },
-          ),
+          // Other actions...
         ],
       ),
       body: Column(
@@ -108,12 +64,32 @@ class _HomePageState extends State<HomePage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Welcome to the Event Management and Registration Page!',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.0,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome to the Event Management and Registration Page!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Container(
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text(
+                    'Balance: \$${User.balance.toStringAsFixed(2)}', // Format the balance as needed
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -141,23 +117,6 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.pushNamed(context, '/addForm');
         },
-      ),
-    );
-  }
-}
-
-
-
-
-class AddEventPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Event'),
-      ),
-      body: Center(
-        child: Text('Add Event Page'),
       ),
     );
   }

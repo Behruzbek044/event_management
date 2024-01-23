@@ -35,6 +35,7 @@ class User {
   final String? username;  // Nullable since it can be null
   final String password;
   final DateTime joinedDate;
+  final double balance;
 
   User({
     required this.id,
@@ -45,6 +46,7 @@ class User {
     this.username,  // Nullable
     required this.password,
     required this.joinedDate,
+    required this.balance,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class User {
       username: json['username'],  // Nullable
       password: json['password'],
       joinedDate: DateTime.parse(json['joinedDate']),
+      balance: json['balance'],
     );
   }
 }
