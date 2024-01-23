@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'main_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 
 class EventForm extends StatelessWidget {
@@ -31,7 +34,7 @@ class _EventFormPageState extends State<EventFormPage> {
   double? _cost;
   String? _selectedType;
 
-  List<String> _eventTypes = ['Offline', 'Online', 'Hybrid'];
+  List<String> _eventTypes = ['OFFLINE', 'ONLINE', 'HYBRID'];
 
   @override
   Widget build(BuildContext context) {
@@ -169,14 +172,53 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-  void _submitForm() {
-    // Perform actions with the form data
-    print('Event Name: ${_nameController.text}');
-    print('Description: ${_descriptionController.text}');
-    print('Place: ${_placeController.text}');
-    print('Start Time: $_startDate');
-    print('End Time: $_endDate');
-    print('Cost: $_cost');
-    print('Event Type: $_selectedType');
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      // Assuming allDay and eventType have been handled in your form
+      bool allDay = false; // This could be another field in your form
+      String? eventType = _selectedType; // If this is nullable in your API
+
+      // Construct the JSON object with the event data
+      final Map<String, dynamic> eventData = {
+        "name": _nameController.text,
+        "description": _descriptionController.text,
+        "place": _placeController.text.isNotEmpty ? _placeController.text : null, // Assuming 'place' can be null in your API
+        "startTime": _startDate.toIso8601String(),
+        "endTime": _endDate.toIso8601String(),
+        "cost": _cost,
+        "place": _placeController.text.isNotEmpty ? _placeController.text : null, // Assuming 'place' can be null in your API
+        "eventType": _selectedType,
+        "allDay" : false
+      };
+
+      // Convert event data to JSON string
+      String jsonEvent = jsonEncode(eventData);
+
+      // Use the correct endpoint for adding an event
+      var url = Uri.parse('http://localhost:8080/api/events/save');
+
+      try {
+        // Send the request to the API
+        var response = await http.post(
+          url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEvent,
+        );
+
+        // Check the response status code
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          // If the event was added successfully, navigate to the main page
+          Navigator.pushNamed(context, '/mainPage');
+        } else {
+          // If the server did not return a "200 OK response",
+          // then throw an exception.
+          throw Exception('Failed to add event');
+        }
+      } catch (e) {
+        // Handle any exceptions here
+        print(e);
+      }
+    }
   }
+
 }

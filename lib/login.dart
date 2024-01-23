@@ -12,37 +12,57 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   late User user;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void initState() {
     super.initState();
-    fetchData();
   }
 
-  void fetchData() async {
-    var url = Uri.parse('http://localhost:8080/api/users/get');
+
+
+  Future<bool> authenticateUser(String enteredUsername, String enteredPassword) async {
+    var url = Uri.parse('http://localhost:8080/api/users/signIn');
     try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          user = data.map((json) => User.fromJson(json)) as User;
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
+      var response = await http.post(
+        url,
+        headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+        body: jsonEncode(<String, String>{
+          "username": enteredUsername,
+          "password": enteredPassword,
+        }),
+      );
+      print(response.statusCode);
+
+      if (response.statusCode  == 200) {
+        return true;
+        // Example: assuming response body is {"id": 123}
+        var data = jsonDecode(response.body);
+
+
+        if (data.containsKey('id')) {
+          // If you need to fetch more details, make another API call here
+          int userId = data['id'];
+          // Fetch user details using userId or store userId as per your requirement
+          // For example:
+          // user = await fetchUserDetails(userId);
+
+          // For now, just storing the ID
+          // setState(() {
+          //   user = User(id: userId, ); // Provide other default values or fetch them
+          // });
+          return true;
+        }
       }
+      return false;
     } catch (e) {
       print('Error: $e');
+      return false;
     }
   }
 
-  bool authenticateUser(String enteredEmail, String enteredPassword) {
-    if (user.email == enteredEmail && user.password == enteredPassword) {
-      return true;
-    }
-    return false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +85,18 @@ class LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 24.0),
               TextFormField(
-                controller: _emailController,
+                controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Username',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-
-                  return null;
-                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter your email';
+                //   }
+                //
+                //   return null;
+                // },
               ),
               SizedBox(height: 12.0),
               PasswordField(
@@ -94,23 +114,29 @@ class LoginPageState extends State<LoginPage> {
                 height: 50.0,
                 width: 150.0,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      String enteredEmail = _emailController.text;
-                      String enteredPassword = _passwordController.text;
+                    onPressed: () async {
+                      if (true) {
+                        String enteredUsername = _usernameController.text;
+                        String enteredPassword = _passwordController.text;
 
-                      if (authenticateUser(enteredEmail, enteredPassword)) {
-                        Navigator.pushNamed(context, '/home');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Invalid email or password. Please try again.'),
-                            duration: Duration(seconds: 3),
-                          ),
-                        );
+                        // Call the authenticate user function and await its result
+                        bool isAuthenticated = await authenticateUser(enteredUsername, enteredPassword);
+
+                        print("smth");
+
+                        if (isAuthenticated) {
+                          Navigator.pushNamed(context, '/home'); // Navigate to the home page
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid email or password. Please try again.'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       }
-                    }
-                  },
+                    },
+
                   style: ElevatedButton.styleFrom(
                     primary: Colors.redAccent,
                     shape: RoundedRectangleBorder(
