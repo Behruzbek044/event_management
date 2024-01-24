@@ -70,12 +70,24 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Event Management and Registration'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-          ),
+      IconButton(
+      icon: Icon(Icons.person),
+      onPressed: () {
+        Navigator.pushNamed(context, '/profile');
+      },
+    ),
+    IconButton(
+    onPressed: (){Navigator.pushNamed(context, '/upcoming');},
+    icon: Icon(Icons.calendar_month_outlined)
+    ),
+    IconButton(
+    icon: Icon(_filterApplied ? Icons.filter_alt : Icons.filter_alt_off),
+    onPressed: () {
+    setState(() {
+    _filterApplied = !_filterApplied;
+    });
+    },
+    ),
           // Other actions...
         ],
       ),
@@ -102,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Text(
-                    'Balance: \$$balance.toStringAsFixed(2)}', // Format the balance as needed
+                    'Balance: \$${balance.toStringAsFixed(2)}', // Format the balance as needed
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

@@ -47,6 +47,7 @@ class SignUpPageState extends State<SignUpPage> {
         'email': _emailController.text,
         'phone_number': _phoneController.text,
         'password': _passwordController.text,
+        'password2' : _passwordController2.text,
       };
 
       // Convert user data to JSON format
@@ -197,8 +198,8 @@ class SignUpPageState extends State<SignUpPage> {
                     PasswordField(
                       controller: _passwordController2,
                       validator: (String? value) {
-                        if (value != _passwordController.text) {
-                          return 'Password does not match';
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a Password';
                         }
                         return null;
                       },

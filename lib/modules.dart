@@ -33,8 +33,8 @@ class User {
   final String phoneNumber;
   final String email;
   final String? username;  // Nullable since it can be null
-  final String password;
-  final DateTime joinedDate;
+  final String? password;
+  final String joinedDate; // Make this nullable
   final double balance;
 
   User({
@@ -44,8 +44,8 @@ class User {
     required this.phoneNumber,
     required this.email,
     this.username,  // Nullable
-    required this.password,
-    required this.joinedDate,
+    this.password,
+    required this.joinedDate, // Nullable
     required this.balance,
   });
 
@@ -57,8 +57,8 @@ class User {
       phoneNumber: json['phoneNumber'],
       email: json['email'],
       username: json['username'],  // Nullable
-      password: json['password'],
-      joinedDate: DateTime.parse(json['joinedDate']),
+      password: json['password']== null ? null : "",
+      joinedDate: json['joinedDate'],
       balance: json['balance'],
     );
   }

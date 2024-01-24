@@ -23,12 +23,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void fetchUserData() async {
     // Your API endpoint
-    var url = Uri.parse('http://localhost:8080/api/users/get/1'); //${user!.id}
+    var url = Uri.parse('http://localhost:8080/api/users/get/2'); //${user!.id}
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         // Assume the API returns a JSON object, not a list
         setState(() {
+          print(jsonDecode(response.body));
           user = User.fromJson(jsonDecode(response.body));
         });
       } else {
@@ -54,9 +55,6 @@ class _ProfilePageState extends State<ProfilePage> {
     final String displayEmail = user?.email ?? 'Loading...';
     final String displayPhoneNumber = user?.phoneNumber ?? 'Loading...';
     final String displayStudentID = user?.id.toString() ?? 'Unavailable';
-    final String displayJoinDate = user?.joinedDate != null
-        ? DateFormat('MMMM d, yyyy').format(user!.joinedDate)
-        : 'Loading...';
 
     return MaterialApp(
       home: Scaffold(
@@ -126,7 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             _buildInfoItem('Email', displayEmail),
                             _buildInfoItem('Phone Number', displayPhoneNumber),
                             _buildInfoItem('Student ID', displayStudentID),
-                            _buildInfoItem('Join Date', displayJoinDate),
                           ],
                         ),
                       ),
